@@ -2,7 +2,7 @@
 #
 # Secure MariaDB Galera Install
 
-echo -e "\nY\n{{ mariadb_root_pwd }}\n{{ mariadb_root_pwd }}\nY\nY\nY\nY\n" | mysql_secure_installation 2>/dev/null
+echo -e "\nY\n{{ mariadb_root_password }}\n{{ mariadb_root_password }}\nY\nY\nY\nY\n" | mysql_secure_installation 2>/dev/null
 
 exit_code=$?
 

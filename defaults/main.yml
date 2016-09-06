@@ -1,1 +1,1 @@
-mariadb_root_pwd: mariadb_root_password
+mariadb_root_password: "{{ lookup('env','MARIADB_ROOT_PASSWORD') }}"
