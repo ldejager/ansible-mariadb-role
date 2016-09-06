@@ -1,0 +1,58 @@
+---
+- name: Repos - Install mariadb repo
+  copy: src=mariadb.repo
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
+  tags:
+    - mariadb
+
+- name: MariaDB - Install mariadb server and client
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+    - MySQL-python
+  tags:
+    - mariadb
+
+- name: MariaDB - Enable and start MariaDB Service
+  service: name=mysqld enabled=yes state=started
+  tags:
+    - mariadb
+
+- name: MariaDB - Create setup scripts directory
+  file: path=/root/setup_scripts state=directory mode=0755
+  tags:
+    - mariadb
+
+- name: MariaDB - Copy secure_mariadb_install script
+  template: src=secure_mariadb.sh.j2 dest=/root/setup_scripts/secure_mariadb_install.sh mode=0755
+  tags:
+    - mariadb
+
+- name: MariaDB - Check if secure_mariadb_install has already been executed
+  stat: path=/root/.secure_mariadb_install.completed
+  register: secure_mariadb_install_completed
+  tags:
+    - mariadb
+
+- name: MariaDB - Execute secure_mariadb_install if not already executed
+  command: sh /root/setup_scripts/secure_mariadb_install.sh
+  when: secure_mariadb_install_completed.stat.exists == False
+  tags:
+    - mariadb
+
+- name: MariaDB - Copy user .my.cnf file with root passwd credentials
+  template: src=client_my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+  tags:
+    - mariadb
+
+- name: MariaDB - Install server configuration file
+  copy: src=server.conf
+        dest=/etc/my.cnf.d/server.cnf
+        owner=root group=root mode=0644
+  tags:
+    - mariadb
