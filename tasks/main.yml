@@ -7,7 +7,7 @@
     - mariadb
 
 - name: MariaDB - Install mariadb server and client
-  become: yes
+  become: true
   yum:
     name: "{{ item }}"
     state: latest
