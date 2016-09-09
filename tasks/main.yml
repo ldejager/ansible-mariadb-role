@@ -61,3 +61,13 @@
   file: path=/root/setup_scripts state=absent
   tags:
     - mariadb
+
+- name: Install the percona repository
+  yum: name=http://www.percona.com/downloads/percona-release/redhat/0.1-3/percona-release-0.1-3.noarch.rpm state=present
+  tags:
+    - mariadb
+
+- name: Install latest version of percona-xtrabackup
+  yum: name=percona-xtrabackup-24 enablerepo=percona-release-x86_64 state=latest
+  tags:
+    - mariadb
